@@ -59,13 +59,21 @@ class MyHomePageState extends State<MyHomePage> {
       backgroundColor: FightClubColors.background,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             FightersInfo(
                 yourLivesCount: yourLives,
                 enemiesLivesCount: enemiesLives,
                 maxLivesCount: maxLives),
-            Expanded(child: SizedBox()),
-            SizedBox(height: 14),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 30, bottom: 30),
+              child: ColoredBox(
+                color: FightClubColors.blueBackground,
+                child: SizedBox(height: 16, width: 16),
+              ),
+            )),
             ControlsWidget(
               attackingBodyPart: attackingBodyPart,
               defendingBodyPart: defendingBodyPart,
@@ -202,16 +210,17 @@ class FightersInfo extends StatelessWidget {
       height: 160,
       child: Stack(children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
                 child: ColoredBox(
               color: FightClubColors.whiteBackground,
-              child: SizedBox(height: 160),
+              child: SizedBox(),
             )),
             Expanded(
                 child: ColoredBox(
-              color: FightClubColors.secondaryBackground,
-              child: SizedBox(height: 160),
+              color: FightClubColors.blueBackground,
+              child: SizedBox(),
             )),
           ],
         ),
@@ -228,9 +237,7 @@ class FightersInfo extends StatelessWidget {
                   Text("You",
                       style: TextStyle(color: FightClubColors.darkGreyText)),
                   SizedBox(height: 12),
-                  ColoredBox(
-                      color: Colors.red,
-                      child: SizedBox(height: 92, width: 92)),
+                  Image.asset(FightClubIcons.youAvatar, height: 92, width: 92)
                 ],
               ),
             ),
@@ -243,9 +250,8 @@ class FightersInfo extends StatelessWidget {
                   Text("Enemy",
                       style: TextStyle(color: FightClubColors.darkGreyText)),
                   SizedBox(height: 12),
-                  ColoredBox(
-                      color: Colors.blue,
-                      child: SizedBox(height: 92, width: 92)),
+                  Image.asset(FightClubIcons.enemyAvatar,
+                      height: 92, width: 92),
                 ],
               ),
             ),
@@ -364,10 +370,15 @@ class LivesWidget extends StatelessWidget {
       Column(
         children: List.generate(overallLivesCount, (index) {
           if (index < currentLivesCount) {
-            return Image.asset(FightClubIcons.heartFull, width: 18, height: 18);
+            return Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Image.asset(FightClubIcons.heartFull,
+                    width: 18, height: 18));
           } else {
-            return Image.asset(FightClubIcons.heartEmpty,
-                width: 18, height: 18);
+            return Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Image.asset(FightClubIcons.heartEmpty,
+                    width: 18, height: 18));
           }
         }),
       )
