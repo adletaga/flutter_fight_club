@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,17 +16,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+          textTheme:
+              GoogleFonts.pressStart2pTextTheme(Theme.of(context).textTheme)),
       home: const MyHomePage(),
     );
   }
@@ -37,8 +41,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const maxLives = 5;
   BodyPart? defendingBodyPart;
   BodyPart? attackingBodyPart;
+
+  BodyPart enemiesDefendingBodyPart = BodyPart.random();
+  BodyPart enemiesAttackingBodyPart = BodyPart.random();
+
+  int yourLives = maxLives;
+  int enemiesLives = maxLives;
 
   @override
   Widget build(BuildContext context) {
@@ -47,111 +58,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: [
           SizedBox(height: 55),
-          Row(
-            children: [
-              SizedBox(width: 16),
-              Expanded(
-                  child: Center(
-                child: PlayerHPWidget(name: "You"),
-              )),
-              SizedBox(width: 12),
-              Expanded(
-                  child: Center(
-                child: PlayerHPWidget(name: "Enemy"),
-              )),
-              SizedBox(width: 16),
-            ],
-          ),
+          FightersInfo(
+              yourLivesCount: yourLives,
+              enemiesLivesCount: enemiesLives,
+              maxLivesCount: maxLives),
           Expanded(child: SizedBox()),
           SizedBox(height: 14),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(height: 40, child: Center(child: Text("DEFEND"))),
-                    BodyPartButton(
-                      bodyPart: BodyPart.head,
-                      selected: defendingBodyPart == BodyPart.head,
-                      bodyPartSetter: _selectDefendingBodyPart,
-                    ),
-                    SizedBox(height: 14),
-                    BodyPartButton(
-                      bodyPart: BodyPart.torso,
-                      selected: defendingBodyPart == BodyPart.torso,
-                      bodyPartSetter: _selectDefendingBodyPart,
-                    ),
-                    SizedBox(height: 14),
-                    BodyPartButton(
-                      bodyPart: BodyPart.legs,
-                      selected: defendingBodyPart == BodyPart.legs,
-                      bodyPartSetter: _selectDefendingBodyPart,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(height: 40, child: Center(child: Text("ATTACK"))),
-                    BodyPartButton(
-                      bodyPart: BodyPart.head,
-                      selected: attackingBodyPart == BodyPart.head,
-                      bodyPartSetter: _selectAttackingBodyPart,
-                    ),
-                    SizedBox(height: 14),
-                    BodyPartButton(
-                      bodyPart: BodyPart.torso,
-                      selected: attackingBodyPart == BodyPart.torso,
-                      bodyPartSetter: _selectAttackingBodyPart,
-                    ),
-                    SizedBox(height: 14),
-                    BodyPartButton(
-                      bodyPart: BodyPart.legs,
-                      selected: attackingBodyPart == BodyPart.legs,
-                      bodyPartSetter: _selectAttackingBodyPart,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 16),
-            ],
+          ControlsWidget(
+            attackingBodyPart: attackingBodyPart,
+            defendingBodyPart: defendingBodyPart,
+            selectAttackingBodyPart: _selectAttackingBodyPart,
+            selectDefendingBodyPart: _selectDefendingBodyPart,
           ),
           SizedBox(height: 14),
-          Row(
-            children: [
-              SizedBox(width: 16),
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: ColoredBox(
-                    color: _isGoButtonEnabled()
-                        ? Colors.black87
-                        : MyColors.BUTTON_GREY_COLOR,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (defendingBodyPart != null &&
-                            attackingBodyPart != null) {
-                          onGoClicked();
-                        }
-                      },
-                      child: Center(
-                          child: Text(
-                        "GO".toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 16),
-                      )),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16)
-            ],
+          GoButton(
+            onTap: _onGoButtonClicked,
+            color: _getGoButtonColor(),
+            text: _isLifesFinished() ? "Start new game" : "Go",
           ),
           SizedBox(height: 14),
         ],
@@ -159,47 +82,251 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Color _getGoButtonColor() {
+    if (_isGoButtonEnabled() || _isLifesFinished()) {
+      return Colors.black87;
+    } else {
+      return Colors.black38;
+    }
+  }
+
   bool _isGoButtonEnabled() {
     return defendingBodyPart != null && attackingBodyPart != null;
   }
 
+  bool _isLifesFinished() {
+    return yourLives == 0 || enemiesLives == 0;
+  }
+
   void _selectDefendingBodyPart(BodyPart value) {
+    if (yourLives == 0 || enemiesLives == 0) {
+      return;
+    }
     setState(() {
       defendingBodyPart = value;
     });
   }
 
   void _selectAttackingBodyPart(BodyPart value) {
+    if (yourLives == 0 || enemiesLives == 0) {
+      return;
+    }
     setState(() {
       attackingBodyPart = value;
     });
   }
 
-  void onGoClicked() {
+  void _onGoButtonClicked() {
     setState(() {
-      defendingBodyPart = null;
-      attackingBodyPart = null;
+      if (yourLives == 0 || enemiesLives == 0) {
+        yourLives = maxLives;
+        enemiesLives = maxLives;
+      } else {
+        if (defendingBodyPart != enemiesAttackingBodyPart) {
+          yourLives--;
+        }
+
+        if (attackingBodyPart != enemiesDefendingBodyPart) {
+          enemiesLives--;
+        }
+
+        defendingBodyPart = null;
+        attackingBodyPart = null;
+        enemiesDefendingBodyPart = BodyPart.random();
+        enemiesAttackingBodyPart = BodyPart.random();
+      }
     });
   }
 }
 
-class PlayerHPWidget extends StatelessWidget {
-  final String name;
+class GoButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final Color color;
+  final String text;
 
-  const PlayerHPWidget({Key? key, required this.name}) : super(key: key);
+  const GoButton(
+      {Key? key, required this.onTap, required this.color, required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 16),
+        Expanded(
+          child: GestureDetector(
+            onTap: onTap,
+            child: SizedBox(
+              height: 40,
+              child: ColoredBox(
+                color: color,
+                // color: _isGoButtonEnabled()
+                //     ? Colors.black87
+                //     : MyColors.BUTTON_GREY_COLOR,
+                child: Center(
+                    child: Text(
+                  text.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16),
+                )),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 16)
+      ],
+    );
+  }
+}
+
+class FightersInfo extends StatelessWidget {
+  final maxLivesCount;
+  final yourLivesCount;
+  final enemiesLivesCount;
+
+  const FightersInfo({
+    Key? key,
+    required this.maxLivesCount,
+    required this.yourLivesCount,
+    required this.enemiesLivesCount,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 16),
+        Expanded(
+            child: Center(
+          child: Column(
+            children: [
+              Text("You"),
+              SizedBox(height: 11),
+              LivesWidget(
+                  overallLivesCount: maxLivesCount,
+                  currentLivesCount: yourLivesCount)
+            ],
+          ),
+        )),
+        SizedBox(width: 12),
+        Expanded(
+            child: Center(
+          child: Column(
+            children: [
+              Text("Enemy"),
+              SizedBox(height: 11),
+              LivesWidget(
+                  overallLivesCount: maxLivesCount,
+                  currentLivesCount: enemiesLivesCount)
+            ],
+          ),
+        )),
+        SizedBox(width: 16),
+      ],
+    );
+  }
+}
+
+class ControlsWidget extends StatelessWidget {
+  const ControlsWidget(
+      {Key? key,
+      required this.defendingBodyPart,
+      required this.attackingBodyPart,
+      required this.selectDefendingBodyPart,
+      required this.selectAttackingBodyPart})
+      : super(key: key);
+
+  final BodyPart? defendingBodyPart;
+  final BodyPart? attackingBodyPart;
+  final ValueSetter<BodyPart> selectDefendingBodyPart;
+  final ValueSetter<BodyPart> selectAttackingBodyPart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            children: [
+              SizedBox(height: 40, child: Center(child: Text("DEFEND"))),
+              BodyPartButton(
+                bodyPart: BodyPart.head,
+                selected: defendingBodyPart == BodyPart.head,
+                bodyPartSetter: selectDefendingBodyPart,
+              ),
+              SizedBox(height: 14),
+              BodyPartButton(
+                bodyPart: BodyPart.torso,
+                selected: defendingBodyPart == BodyPart.torso,
+                bodyPartSetter: selectDefendingBodyPart,
+              ),
+              SizedBox(height: 14),
+              BodyPartButton(
+                bodyPart: BodyPart.legs,
+                selected: defendingBodyPart == BodyPart.legs,
+                bodyPartSetter: selectDefendingBodyPart,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            children: [
+              SizedBox(height: 40, child: Center(child: Text("ATTACK"))),
+              BodyPartButton(
+                bodyPart: BodyPart.head,
+                selected: attackingBodyPart == BodyPart.head,
+                bodyPartSetter: selectAttackingBodyPart,
+              ),
+              SizedBox(height: 14),
+              BodyPartButton(
+                bodyPart: BodyPart.torso,
+                selected: attackingBodyPart == BodyPart.torso,
+                bodyPartSetter: selectAttackingBodyPart,
+              ),
+              SizedBox(height: 14),
+              BodyPartButton(
+                bodyPart: BodyPart.legs,
+                selected: attackingBodyPart == BodyPart.legs,
+                bodyPartSetter: selectAttackingBodyPart,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 16),
+      ],
+    );
+  }
+}
+
+class LivesWidget extends StatelessWidget {
+  final int overallLivesCount;
+  final int currentLivesCount;
+
+  const LivesWidget(
+      {Key? key,
+      required this.overallLivesCount,
+      required this.currentLivesCount})
+      : assert(overallLivesCount >= 1),
+        assert(currentLivesCount >= 0),
+        assert(currentLivesCount <= overallLivesCount),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        Text(name),
-        SizedBox(height: 11),
-        Text("1"),
-        Text("1"),
-        Text("1"),
-        Text("1"),
-        Text("1"),
-      ],
+      children: List.generate(overallLivesCount, (index) {
+        if (index < currentLivesCount) {
+          return Text("1");
+        } else {
+          return Text("0");
+        }
+      }),
     );
   }
 }
@@ -216,6 +343,16 @@ class BodyPart {
   @override
   String toString() {
     return 'BodyPart{name: $name}';
+  }
+
+  static const List<BodyPart> _values = [
+    BodyPart.head,
+    BodyPart.torso,
+    BodyPart.legs
+  ];
+
+  static BodyPart random() {
+    return _values[Random().nextInt(_values.length)];
   }
 }
 
