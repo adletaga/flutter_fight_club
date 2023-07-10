@@ -4,6 +4,8 @@ class FightClubColors {
   FightClubColors._();
 
   static const background = Color.fromRGBO(213, 222, 240, 1);
+  static const secondaryBackground = Color.fromRGBO(197, 209, 234, 1);
+  static const whiteBackground = Color.fromRGBO(255, 255, 255, 1);
 
   static const greyButton = Color.fromRGBO(0, 0, 0, 0.38);
   static const blueButton = Color.fromRGBO(28, 121, 206, 1);

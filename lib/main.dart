@@ -200,45 +200,61 @@ class FightersInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 160,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          LivesWidget(
-              overallLivesCount: maxLivesCount,
-              currentLivesCount: yourLivesCount),
-          Center(
-            child: Column(
-              children: [
-                SizedBox(height: 16),
-                Text("You",
-                    style:
-                        TextStyle(color: FightClubColors.darkGreyText)),
-                SizedBox(height: 12),
-                ColoredBox(
-                    color: Colors.red, child: SizedBox(height: 92, width: 92)),
-              ],
+      child: Stack(children: [
+        Row(
+          children: [
+            Expanded(
+                child: ColoredBox(
+              color: FightClubColors.whiteBackground,
+              child: SizedBox(height: 160),
+            )),
+            Expanded(
+                child: ColoredBox(
+              color: FightClubColors.secondaryBackground,
+              child: SizedBox(height: 160),
+            )),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            LivesWidget(
+                overallLivesCount: maxLivesCount,
+                currentLivesCount: yourLivesCount),
+            Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  Text("You",
+                      style: TextStyle(color: FightClubColors.darkGreyText)),
+                  SizedBox(height: 12),
+                  ColoredBox(
+                      color: Colors.red,
+                      child: SizedBox(height: 92, width: 92)),
+                ],
+              ),
             ),
-          ),
-          ColoredBox(
-              color: Colors.green, child: SizedBox(width: 44, height: 44)),
-          Center(
-            child: Column(
-              children: [
-                SizedBox(height: 16),
-                Text("Enemy",
-                    style:
-                        TextStyle(color: FightClubColors.darkGreyText)),
-                SizedBox(height: 12),
-                ColoredBox(
-                    color: Colors.blue, child: SizedBox(height: 92, width: 92)),
-              ],
+            ColoredBox(
+                color: Colors.green, child: SizedBox(width: 44, height: 44)),
+            Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  Text("Enemy",
+                      style: TextStyle(color: FightClubColors.darkGreyText)),
+                  SizedBox(height: 12),
+                  ColoredBox(
+                      color: Colors.blue,
+                      child: SizedBox(height: 92, width: 92)),
+                ],
+              ),
             ),
-          ),
-          LivesWidget(
-              overallLivesCount: maxLivesCount,
-              currentLivesCount: enemiesLivesCount),
-        ],
-      ),
+            LivesWidget(
+                overallLivesCount: maxLivesCount,
+                currentLivesCount: enemiesLivesCount),
+          ],
+        ),
+      ]),
     );
   }
 }
@@ -270,8 +286,8 @@ class ControlsWidget extends StatelessWidget {
                   height: 40,
                   child: Center(
                       child: Text("DEFEND",
-                          style: TextStyle(
-                              color: FightClubColors.darkGreyText)))),
+                          style:
+                              TextStyle(color: FightClubColors.darkGreyText)))),
               BodyPartButton(
                 bodyPart: BodyPart.head,
                 selected: defendingBodyPart == BodyPart.head,
@@ -300,8 +316,8 @@ class ControlsWidget extends StatelessWidget {
                   height: 40,
                   child: Center(
                       child: Text("ATTACK",
-                          style: TextStyle(
-                              color: FightClubColors.darkGreyText)))),
+                          style:
+                              TextStyle(color: FightClubColors.darkGreyText)))),
               BodyPartButton(
                 bodyPart: BodyPart.head,
                 selected: attackingBodyPart == BodyPart.head,
@@ -417,4 +433,3 @@ class BodyPartButton extends StatelessWidget {
     );
   }
 }
-
