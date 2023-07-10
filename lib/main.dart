@@ -52,6 +52,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   int yourLives = maxLives;
   int enemiesLives = maxLives;
+  String infoText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,17 @@ class MyHomePageState extends State<MyHomePage> {
                   left: 16, right: 16, top: 30, bottom: 30),
               child: ColoredBox(
                 color: FightClubColors.blueBackground,
-                child: SizedBox(height: 16, width: 16),
+                child: SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: Center(
+                      child: Text(infoText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: FightClubColors.darkGreyText,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 10))),
+                ),
               ),
             )),
             ControlsWidget(
@@ -138,16 +149,33 @@ class MyHomePageState extends State<MyHomePage> {
   void _onGoButtonClicked() {
     setState(() {
       if (yourLives == 0 || enemiesLives == 0) {
+        if (yourLives == 0 && enemiesLives == 0) {
+          infoText = "Draw";
+        } else if (yourLives == 0) {
+          infoText = "You lost";
+        } else {
+          infoText = "You won";
+        }
         yourLives = maxLives;
         enemiesLives = maxLives;
       } else {
+        String secondLine;
         if (defendingBodyPart != enemiesAttackingBodyPart) {
+          secondLine = "Enemy hit your ${enemiesAttackingBodyPart.name.toLowerCase()}.";
           yourLives--;
+        } else {
+          secondLine = "Enemy’s attack was blocked.";
         }
+
+        String firstLine = "";
 
         if (attackingBodyPart != enemiesDefendingBodyPart) {
           enemiesLives--;
+          firstLine = "You hit enemy’s ${enemiesDefendingBodyPart.name.toLowerCase()}.";
+        } else {
+          firstLine = "Your attack was blocked.";
         }
+        infoText = "${firstLine}\n${secondLine}";
 
         defendingBodyPart = null;
         attackingBodyPart = null;
