@@ -1,6 +1,6 @@
-class FightClubIcons {
+class FightClubImages {
 
-  FightClubIcons._();
+  FightClubImages._();
   static const heartFull = "assets/icons/heart-full.png";
   static const heartEmpty = "assets/icons/heart-empty.png";
   static const youAvatar = "assets/icons/you-avatar.png";

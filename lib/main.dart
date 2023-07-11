@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fight_club/fight_club_colors.dart';
-import 'package:flutter_fight_club/fight_club_icons.dart';
+import 'package:flutter_fight_club/fight_club_images.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -60,7 +60,7 @@ class MyHomePageState extends State<MyHomePage> {
       backgroundColor: FightClubColors.background,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             FightersInfo(
                 yourLivesCount: yourLives,
@@ -74,7 +74,7 @@ class MyHomePageState extends State<MyHomePage> {
                 color: FightClubColors.blueBackground,
                 child: SizedBox(
                   height: 16,
-                  width: 16,
+                  width: double.infinity,
                   child: Center(
                       child: Text(infoText,
                           textAlign: TextAlign.center,
@@ -161,7 +161,8 @@ class MyHomePageState extends State<MyHomePage> {
       } else {
         String secondLine;
         if (defendingBodyPart != enemiesAttackingBodyPart) {
-          secondLine = "Enemy hit your ${enemiesAttackingBodyPart.name.toLowerCase()}.";
+          secondLine =
+              "Enemy hit your ${enemiesAttackingBodyPart.name.toLowerCase()}.";
           yourLives--;
         } else {
           secondLine = "Enemy’s attack was blocked.";
@@ -171,7 +172,8 @@ class MyHomePageState extends State<MyHomePage> {
 
         if (attackingBodyPart != enemiesDefendingBodyPart) {
           enemiesLives--;
-          firstLine = "You hit enemy’s ${enemiesDefendingBodyPart.name.toLowerCase()}.";
+          firstLine =
+              "You hit enemy’s ${enemiesDefendingBodyPart.name.toLowerCase()}.";
         } else {
           firstLine = "Your attack was blocked.";
         }
@@ -265,7 +267,7 @@ class FightersInfo extends StatelessWidget {
                   Text("You",
                       style: TextStyle(color: FightClubColors.darkGreyText)),
                   SizedBox(height: 12),
-                  Image.asset(FightClubIcons.youAvatar, height: 92, width: 92)
+                  Image.asset(FightClubImages.youAvatar, height: 92, width: 92)
                 ],
               ),
             ),
@@ -278,7 +280,7 @@ class FightersInfo extends StatelessWidget {
                   Text("Enemy",
                       style: TextStyle(color: FightClubColors.darkGreyText)),
                   SizedBox(height: 12),
-                  Image.asset(FightClubIcons.enemyAvatar,
+                  Image.asset(FightClubImages.enemyAvatar,
                       height: 92, width: 92),
                 ],
               ),
@@ -400,12 +402,12 @@ class LivesWidget extends StatelessWidget {
           if (index < currentLivesCount) {
             return Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Image.asset(FightClubIcons.heartFull,
+                child: Image.asset(FightClubImages.heartFull,
                     width: 18, height: 18));
           } else {
             return Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Image.asset(FightClubIcons.heartEmpty,
+                child: Image.asset(FightClubImages.heartEmpty,
                     width: 18, height: 18));
           }
         }),
